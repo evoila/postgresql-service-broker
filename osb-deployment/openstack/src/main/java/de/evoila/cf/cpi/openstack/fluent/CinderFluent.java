@@ -3,14 +3,13 @@
  */
 package de.evoila.cf.cpi.openstack.fluent;
 
-import java.util.List;
-
+import de.evoila.cf.cpi.openstack.fluent.connection.OpenstackConnectionFactory;
 import org.openstack4j.api.Builders;
 import org.openstack4j.api.OSClient;
-import org.openstack4j.model.common.ActionResponse;
+import org.openstack4j.model.compute.ActionResponse;
 import org.openstack4j.model.storage.block.Volume;
 
-import de.evoila.cf.cpi.openstack.fluent.connection.OpenstackConnectionFactory;
+import java.util.List;
 
 /**
  * @author Johannes Hiemer.

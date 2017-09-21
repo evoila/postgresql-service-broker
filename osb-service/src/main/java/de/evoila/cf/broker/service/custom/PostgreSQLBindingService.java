@@ -6,7 +6,10 @@ package de.evoila.cf.broker.service.custom;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import de.evoila.cf.broker.persistence.mongodb.repository.ClusterStackMapping;
+import de.evoila.cf.broker.persistence.mongodb.repository.StackMappingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +35,17 @@ public class PostgreSQLBindingService extends BindingServiceImpl {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	@Autowired
 	private PostgresCustomImplementation postgresCustomImplementation;
-	
-	@Autowired
 	private PostgreSQLExistingServiceFactory existingServiceFactory;
+	private Optional<StackMappingRepository> stackMappingRepository;
+
+	PostgreSQLBindingService(PostgresCustomImplementation customImplementation, PostgreSQLExistingServiceFactory existingServiceFactory, Optional<StackMappingRepository> stackMappingRepository){
+		Assert.notNull(customImplementation, "PostgresCustomImplementation may not be null");
+		Assert.notNull(existingServiceFactory, "PostgreSQLExistingServiceFactory may not be null");
+		this.existingServiceFactory = existingServiceFactory;
+		this.postgresCustomImplementation = customImplementation;
+		this.stackMappingRepository = stackMappingRepository;
+	}
 	
 
 	private PostgresDbService connection(ServiceInstance serviceInstance) throws SQLException {
@@ -55,53 +64,6 @@ public class PostgreSQLBindingService extends BindingServiceImpl {
 		PostgresDbService jdbcService = new PostgresDbService();
 		jdbcService.createConnection(existingServiceFactory.getHosts().get(0), existingServiceFactory.getPort(), database, existingServiceFactory.getUsername(), existingServiceFactory.getPassword());
 		return jdbcService;
-	}
-
-	public void create(ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
-		PostgresDbService jdbcService;
-		try {
-			jdbcService = connection(serviceInstance);
-		} catch (SQLException e1) {
-			throw new ServiceBrokerException("Could not connect to database");
-		}
-
-		String instanceId = serviceInstance.getId();
-
-		try {
-			postgresCustomImplementation.initServiceInstance(jdbcService, serviceInstance, serviceInstance.getId());
-
-			jdbcService.executeUpdate("REVOKE all on database \"" + instanceId + "\" from public");
-		} catch (SQLException e) {
-			log.error(e.toString());
-			throw new ServiceBrokerException("Could not add to database");
-		} finally {
-            jdbcService.closeIfConnected();
-        }
-	}
-
-	public void delete(ServiceInstance serviceInstance, Plan plan) throws ServiceBrokerException {
-		PostgresDbService jdbcService;
-		
-		try {
-			jdbcService = connection(serviceInstance);
-		} catch (SQLException e1) {
-			throw new ServiceBrokerException("Could not connect to database");
-		}
-
-		String instanceId = serviceInstance.getId();
-
-		try {
-//			jdbcService.executeUpdate("REVOKE all on database \"" + instanceId + "\" from public");
-			jdbcService.executeUpdate("DROP DATABASE \"" + instanceId + "\"");
-			jdbcService.executeUpdate("DROP ROLE \"" + instanceId + "\"");
-		} catch (SQLException e) {
-			log.error(e.toString());
-			throw new ServiceBrokerException("Could not remove from database");
-		} finally {
-            jdbcService.closeIfConnected();
-        }
-		
-		
 	}
 
 	/*
@@ -134,7 +96,6 @@ public class PostgreSQLBindingService extends BindingServiceImpl {
 			jdbcService.createConnection(serviceInstance.getHosts().get(0).getIp(), serviceInstance.getHosts().get(0).getPort(), serviceInstance.getId(), bindingId, password);
 			postgresCustomImplementation.setUpBindingUserPrivileges(jdbcService, serviceInstance.getId(), bindingId, password);
 		} catch (SQLException e) {
-			log.error(e.toString());
 			throw new ServiceBrokerException("Could not update database");
 		} finally {
             jdbcService.closeIfConnected();
@@ -158,8 +119,14 @@ public class PostgreSQLBindingService extends BindingServiceImpl {
 	protected void deleteBinding(String bindingId, ServiceInstance serviceInstance) throws ServiceBrokerException {
 		PostgresDbService jdbcService;
 		try {
-			jdbcService = setUpAdminConnection(serviceInstance.getId()); 
-					//connection(serviceInstance);
+
+			if(stackMappingRepository.isPresent() && stackMappingRepository.get().exists(serviceInstance.getId())){
+				// If the service Instance is a Openstack instance
+				ClusterStackMapping stackMapping = stackMappingRepository.get().findOne(serviceInstance.getId());
+				jdbcService = setUpAdminConnection(serviceInstance,stackMapping);
+			} else {
+				jdbcService = setUpAdminConnection(serviceInstance.getId());
+			}
 		} catch (SQLException e1) {
 			throw new ServiceBrokerException("Could not connect to database");
 		}
@@ -172,6 +139,19 @@ public class PostgreSQLBindingService extends BindingServiceImpl {
 		} finally {
             jdbcService.closeIfConnected();
         }
+	}
+
+	private PostgresDbService setUpAdminConnection (ServiceInstance serviceInstance, ClusterStackMapping stackMapping) {
+		PostgresDbService jdbcService = new PostgresDbService();
+		String serviceInstanceId = serviceInstance.getId();
+		boolean connected = false;
+		int i = 0;
+		while(connected == false && i< stackMapping.getServerAddresses().size()){  // try to connect to all hosts
+			ServerAddress address = stackMapping.getServerAddresses().get(i);
+			i++;
+			connected = jdbcService.createConnection(address.getIp(),address.getPort(),serviceInstanceId,serviceInstanceId,serviceInstanceId);
+		}
+		return jdbcService;
 	}
 
 	@Override

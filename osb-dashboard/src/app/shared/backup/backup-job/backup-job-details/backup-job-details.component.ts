@@ -9,6 +9,7 @@ import { Job } from '../../domain/job';
   styleUrls: ['./backup-job-details.component.scss']
 })
 export class BackupJobDetailsComponent implements OnInit {
+  readonly ENTITY = 'jobs';
   job: Job | any = {};
 
   constructor(protected readonly backupService: BackupService,
@@ -18,7 +19,7 @@ export class BackupJobDetailsComponent implements OnInit {
  ngOnInit(): void {
      this.route.params.subscribe(params => {
        if (params['jobId']) {
-          this.backupService.loadOne('jobs', params['jobId'])
+          this.backupService.loadOne(this.ENTITY, params['jobId'])
             .subscribe(
               (job: any) => {this.job = job},
             );
@@ -27,8 +28,7 @@ export class BackupJobDetailsComponent implements OnInit {
 }
 
   public delete() {
-    console.log('DELETE');
-    this.backupService.deleteOne('jobs', this.job.getId()).subscribe((jobs: any) => {
+    this.backupService.deleteOne(this.ENTITY, this.job).subscribe((jobs: any) => {
         this.router.navigate(['/backup']);
     });
   }

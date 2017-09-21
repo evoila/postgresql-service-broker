@@ -49,24 +49,5 @@ class RabbitOnConditionalConfiguration{
             }
 
       }
-
-      @Configuration
-      @Profile("cloud")
-      static class Cloud extends AbstractCloudConfig {
-
-            @Bean
-            public ConnectionFactory rabbitConnectionFactory() {
-                  return connectionFactory().rabbitConnectionFactory();
-            }
-
-            @Bean
-            public AmqpAdmin amqpAdmin() {
-                  return new RabbitAdmin(rabbitConnectionFactory());
-            }
-
-            @Bean
-            public RabbitTemplate rabbitTemplate() {
-                  return new RabbitTemplate(rabbitConnectionFactory());
-            }
-      }
+      
 }

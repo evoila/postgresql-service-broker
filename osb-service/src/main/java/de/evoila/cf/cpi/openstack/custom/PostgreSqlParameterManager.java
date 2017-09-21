@@ -32,8 +32,9 @@ public class PostgreSqlParameterManager {
 	public static final String STANDBY_HOSTNAME = "standby_hostname";
 	public static final String STANDBY_VOLUME_ID = "standby_volume_id";
 	public static final String STANDBY_IP = "standby_ip";
-	public static final String STANDBY_PORT = "standby_port";	
-	
+	public static final String STANDBY_PORT = "standby_port";
+	public static final String STANDBY_ACTIVE = "standby_active";
+
 	public static final String CLUSTER = "cluster";
 
 	static void updatePortParameters(Map<String, String> customParameters, List<String> ips, List<String> ports) {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BackupService } from '../backup.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService, Notification} from '../../../core/notification.service';
 
 
 @Component({
@@ -16,7 +17,8 @@ export class BackupPlanComponent implements OnInit {
 
   constructor(protected readonly backupService: BackupService,
               protected readonly route: ActivatedRoute,
-              protected readonly router: Router) { }
+              protected readonly router: Router,
+              protected readonly nService: NotificationService) { }
 
   ngOnInit() {
     this.backupService.loadAll('destinations')
@@ -47,9 +49,15 @@ export class BackupPlanComponent implements OnInit {
   onSubmit(): void {
     const id = this.update ? this.plan.id : null;
     this.backupService.saveOne(this.plan, this.ENTITY, id)
-      .subscribe((plan: any) => {
-        this.redirect();
-    });
+      .subscribe({
+        next: (d) => {
+          this.nService.add(new Notification('Warning', 'Backup Plan Created'));
+          this.redirect();
+        },
+        error: (e) => {
+          this.nService.add(new Notification('Warning', 'Could not create Backup Plan. Please check your entries.'));
+        }
+      });
   }
 
   private redirect(): void {

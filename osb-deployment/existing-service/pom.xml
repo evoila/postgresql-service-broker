@@ -32,7 +32,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>de.evoila.cf.broker</groupId>
+            <artifactId>model</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>

@@ -133,7 +133,13 @@ public class DeploymentServiceImpl implements DeploymentService {
 
 			createdServiceInstance = platformService.createInstance(serviceInstance, plan, mergedProperties);
 		} catch (PlatformException e) {
+			try {
+				platformService.deleteServiceInstance(serviceInstance);
+			} catch (PlatformException e1) {
+				throw new ServiceBrokerException("Could not delete failed instance " +serviceInstance.getId() + " due to: ", e);
+			}
 			serviceInstanceRepository.deleteServiceInstance(serviceInstance.getId());
+
 
 			throw new ServiceBrokerException("Could not create instance due to: ", e);
 		}

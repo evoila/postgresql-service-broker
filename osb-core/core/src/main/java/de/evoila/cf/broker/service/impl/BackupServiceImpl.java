@@ -2,6 +2,7 @@ package de.evoila.cf.broker.service.impl;
 
 
 import de.evoila.cf.broker.bean.BackupConfiguration;
+import de.evoila.cf.broker.bean.conditional.BackupServiceCondition;
 import de.evoila.cf.broker.exception.ServiceInstanceDoesNotExistException;
 import de.evoila.cf.broker.service.BackupService;
 import de.evoila.cf.broker.service.InstanceCredentialService;
@@ -28,7 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Service
-@ConditionalOnBean(BackupConfiguration.class)
+@ConditionalOnBean(BackupServiceCondition.class)
 public class BackupServiceImpl implements BackupService {
     private static final Logger logger = LoggerFactory.getLogger(BackupServiceImpl.class);
     private final RestTemplate rest;

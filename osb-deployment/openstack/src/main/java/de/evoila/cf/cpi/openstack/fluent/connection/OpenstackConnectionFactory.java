@@ -4,7 +4,6 @@
 package de.evoila.cf.cpi.openstack.fluent.connection;
 
 import org.openstack4j.api.OSClient;
-import org.openstack4j.api.OSClient.OSClientV3;
 import org.openstack4j.model.common.Identifier;
 import org.openstack4j.openstack.OSFactory;
 import org.slf4j.Logger;
@@ -19,7 +18,7 @@ public class OpenstackConnectionFactory {
 
 	private final static Logger log = LoggerFactory.getLogger(OpenstackConnectionFactory.class);
 
-	protected static OSClientV3 osClient;
+	protected static OSClient osClient;
 	
 	private static String username;
 	private static String password;

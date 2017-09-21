@@ -12,6 +12,7 @@
         </div>
       </div>
     </div>
+    <!--
     <div class="form-group row" *ngIf="configuration.scaling.scalingEnabled">
       <label class="col-sm-3">Billing Interval Enabled</label>
       <div class="col-sm-3">
@@ -21,7 +22,8 @@
           </label>
         </div>
       </div>
-    </div>           
+    </div>
+    -->
     <div class="form-group" *ngIf="configuration.scaling.scalingEnabled">
       <label for="scalingIntervalMultiplier">Scaling Interval</label>
       <input type="number" class="form-control" name="scalingIntervalMultiplier" #scalingIntervalMultiplier="ngModel" [(ngModel)]="configuration.scaling.scalingIntervalMultiplier">
@@ -167,7 +169,7 @@
     </div>    
     <h5>Request</h5>
     <div class="form-group row">
-      <label class="col-sm-3">Request Scaling Enabled</label>
+      <label class="col-sm-3">Quotient (Request) Scaling Enabled</label>
       <div class="col-sm-9">
         <div class="form-check">
           <label class="form-check-label">
@@ -185,13 +187,25 @@
       </select>
     </div>
     <div class="form-group" *ngIf="configuration.requests.quotientScalingEnabled">
-      <label for="requestMinQuotient">Min Quotient</label>
-      <input type="number" class="form-control" name="minQuotient" #requestMinQuotient="ngModel" [(ngModel)]="configuration.requests.minQuotient">
-      <small id="requestMinQuotientHelper" class="form-text text-muted">DON'T KNOW.</small>
-      <div [hidden]="requestMinQuotient.valid || requestMinQuotient.pristine" class="alert alert-danger">
-          Minimum Quotient is required
-        </div>
+      <label for="requestMinQuotient">Current Quotient</label>
+      
     </div>    
+    <div class="form-group row" *ngIf="configuration.ram.ramScalingEnabled">
+      <label class="col-sm-2">Current/Min Quotient</label>
+      <div class="col-sm-3">
+        <input type="number" class="form-control" name="minQuotient" #requestMinQuotient="ngModel" [(ngModel)]="configuration.requests.quotient" disabled="true">
+      </div>
+      <div class="col-sm-3">
+        <input type="number" class="form-control" name="minQuotient" #requestMinQuotient="ngModel" [(ngModel)]="configuration.requests.minQuotient">
+        <small id="requestMinQuotientHelper" class="form-text text-muted">Average request count one instance can handle</small>
+        <div [hidden]="requestMinQuotient.valid || requestMinQuotient.pristine" class="alert alert-danger">
+            Minimum Quotient is required
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <button type="button" class="btn btn-primary" (click)="resetQuotient()" [mstInlineLoader]="isLoading">Reset Quotient</button>
+      </div>
+    </div>        
     <button type="submit" class="btn btn-primary" [mstInlineLoader]="isLoading">Save Binding</button>
   </form>
 </div>

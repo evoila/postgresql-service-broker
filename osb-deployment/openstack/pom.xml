@@ -27,20 +27,18 @@
 		<dependency>
 			<groupId>org.pacesys</groupId>
 			<artifactId>openstack4j</artifactId>
-			<version>3.0.4</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.pacesys.openstack4j.connectors</groupId>
-					<artifactId>openstack4j-resteasy</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>2.0.9</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.evoila.cf.broker</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-cypher-compiler-3.2</artifactId>
@@ -55,8 +53,18 @@
 		    <groupId>javax.ws.rs</groupId>
 		    <artifactId>javax.ws.rs-api</artifactId>
 		    <version>2.0.1</version>
-		</dependency> 
-	</dependencies>
+		</dependency>
+        <dependency>
+            <groupId>de.evoila.cf.broker</groupId>
+            <artifactId>core</artifactId>
+			<version>${core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.evoila.cf.broker</groupId>
+            <artifactId>model</artifactId>
+			<version>${core.version}</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

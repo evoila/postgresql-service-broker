@@ -74,7 +74,7 @@ public class PostgreSqlCustomStackHandler extends CustomStackHandler {
 			
 			try {
 				super.deleteAndWait(stackMapping.getPrimaryStack());
-				Thread.sleep(20000);
+				Thread.sleep(60000);
 			} catch (PlatformException | InterruptedException e) {
 				log.error("Could not delete Stack " + stackMapping.getPrimaryStack() + " Instance " + internalId);
 				log.error(e.getMessage());
@@ -101,14 +101,6 @@ public class PostgreSqlCustomStackHandler extends CustomStackHandler {
 		return super.create(instanceId, customParameters);
 	}
 
-	/**
-	 * @param instanceId
-	 * @param customParameters
-	 * @param plan
-	 * @return
-	 * @throws PlatformException
-	 * @throws InterruptedException
-	 */
 	private ClusterStackMapping createCluster(String instanceId, Map<String, String> customParameters)
 			throws PlatformException, InterruptedException {
 
@@ -160,6 +152,7 @@ public class PostgreSqlCustomStackHandler extends CustomStackHandler {
 		valueMap.put(PostgreSqlParameterManager.SERVICE_DB, instanceId);
 		valueMap.put(PostgreSqlParameterManager.KEY_NAME, keyPair);
 		valueMap.put(PostgreSqlParameterManager.STANDBY_HOSTNAME, instanceId);
+		valueMap.put(PostgreSqlParameterManager.STANDBY_ACTIVE, "0");
 		return valueMap;
 	}
 	

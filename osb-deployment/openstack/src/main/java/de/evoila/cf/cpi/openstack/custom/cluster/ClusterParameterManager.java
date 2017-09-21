@@ -42,6 +42,10 @@ public class ClusterParameterManager {
 	public static final String SECONDARY_2_PORT = "secondary2_port";
 	public static final String SECONDARY_1_IP = "secondary1_ip";
 	public static final String SECONDARY_2_IP = "secondary2_ip";
+
+	public static final String SECONDARY_PORTS = "secondary_ports";
+	public static final String SECONDARY_VOLUME_IDS = "secondary_volume_ids";
+	public static final String SECONDARY_IPS = "secondary_ips";
 	
 	public static final String CLUSTER = "cluster";
 	
@@ -58,7 +62,9 @@ public class ClusterParameterManager {
 	public static final String MIRROR2_PORT = "mirror2_port";
 	public static final String MIRROR2_IP = "mirror2_ip";
 	public static final String ETC_HOSTS = "etc_hosts";
-	
+	public static final String SECONDARY_NUMBER = "secondary_number";
+
+
 	/** 
 	 * 
 	 */
@@ -86,6 +92,6 @@ public class ClusterParameterManager {
 		}
 		return copiedProps;
 	}
-	
-	
+
+
 }
