@@ -22,7 +22,6 @@ import org.springframework.cloud.config.java.AbstractCloudConfig;
 class RabbitOnConditionalConfiguration{
 
       @Configuration
-      @Profile({"default", "local"})
       @ConditionalOnBean(RabbitMQCredentials.class)
       static class Default {
 

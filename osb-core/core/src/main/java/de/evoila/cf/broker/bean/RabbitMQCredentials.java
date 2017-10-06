@@ -1,10 +1,12 @@
 package de.evoila.cf.broker.bean;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 @Service
 @ConfigurationProperties(prefix="messaging.rabbitmq")
+@ConditionalOnProperty(name="messaging.rabbitmq.host")
 public class RabbitMQCredentials {
     private String host;
     private String vhost;
