@@ -25,3 +25,4 @@ ca.pem
 *manifest-with-credentials.yml
 *.pid
 *logging.file_IS_UNDEFINED
+osb-service/src/main/resources/static/**
